@@ -1,0 +1,17 @@
+---
+services:
+  mariadb:
+    image: hub.docker.com/_/mariadb:11.1-jammy
+    container_name: mariadb
+    environment:
+      - TZ=Etc/UTC
+  nginx:
+    image: hub.docker.com/_/nginx:1.25
+    container_name: nginx
+    environment:
+      - TZ=Etc/UTC
+  pterodactyl:
+    image: hub.docker.com/_/composer:2.6
+    container_name: pterodactyl
+    environment:
+      - TZ=Etc/UTC

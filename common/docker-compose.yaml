@@ -1,0 +1,12 @@
+---
+services:
+  fail2ban:
+    image: lscr.io/linuxserver/fail2ban:1.0.2
+    container_name: fail2ban
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    network_mode: host
+    environment:
+      - TZ=Etc/UTC
+    restart: always
