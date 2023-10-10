@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 cp example.env .env
 composer install --no-dev --optimize-autoloader
