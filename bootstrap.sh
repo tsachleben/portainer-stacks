@@ -63,7 +63,7 @@ echo
 echo # Setup Docker Daemon Configuration
 sudo tee /etc/docker/daemon.json > /dev/null << DAEMONJSON
 {
-    "log-driver": "systemd"
+    "log-driver": "journald"
 }
 DAEMONJSON
 
