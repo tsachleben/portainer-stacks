@@ -26,8 +26,6 @@ services:
     volumes:
      - pihole-etc:/etc/pihole
      - pihole-dnsmasq:/etc/dnsmasq.d
-    networks:
-     - bridge
     cap_add:
      - NET_ADMIN
     restart: unless-stopped
@@ -36,7 +34,5 @@ volumes:
   pihole-etc: {}
   pihole-dnsmasq: {}
 networks:
-  bridge:
-    external: true
   wg_bridge:
     external: true
