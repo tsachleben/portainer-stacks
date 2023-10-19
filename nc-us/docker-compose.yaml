@@ -1,14 +1,17 @@
 ---
 services:
   vaultwarden:
-    image: hub.docker.com/vaultwarden/server:1.29.2-alpine
+    image: vaultwarden/server:1.29.2-alpine
     container_name: vaultwarden
-    ports:
-      - "80:80/TCP"
     environment:
       - TZ=Etc/UTC
     volumes:
       - vaultwarden-data:/data
+    networks:
+      - wg_bridge
     restart: unless-stopped
 volumes:
   vaultwarden-data: {}
+networks:
+  wg_bridge:
+    external: true
