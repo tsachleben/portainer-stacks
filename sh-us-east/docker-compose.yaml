@@ -36,5 +36,7 @@ volumes:
   pihole-etc: {}
   pihole-dnsmasq: {}
 networks:
-  bridge: {}
-  wg_bridge: {}
+  bridge:
+    external: true
+  wg_bridge:
+    external: true
