@@ -2,7 +2,7 @@
 services:
   mongo:
     image: mongo:5.0
-    name: mongo
+    container_name: mongo
     volumes:
       - mongodb:/data/db
     networks:
