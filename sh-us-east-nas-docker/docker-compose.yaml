@@ -2,8 +2,14 @@
 services:
   mongo:
     image: mongo:5.0
+    name: mongo
     volumes:
       - mongodb:/data/db
+    networks:
+      - wg_bridge
     restart: unless-stopped
 volumes:
   mongodb: {}
+networks:
+  wg_bridge:
+    external: true

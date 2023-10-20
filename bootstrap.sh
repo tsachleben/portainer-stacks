@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ $# -ne 4 ]]; then
+if [[ $# -ne 6 ]]; then
     echo "Usage: $0 <target_host> <target_hostname> <wg_addr> <docker_subnet> <gh_uname> <gh_pat>"
     echo
     echo "Optional Environment Vars:"
@@ -83,7 +83,7 @@ sudo docker run -d \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v portainer_data:/data \
     docker.io/portainer/portainer-ce:latest
-PORTAINER_IP=\$(docker inspect -f '{{.NetworkSettings.Networks.wg_bridge.IPAddress}}' portainer)
+PORTAINER_IP=\$(sudo docker inspect -f '{{.NetworkSettings.Networks.wg_bridge.IPAddress}}' portainer)
 PORTAINER_ADMIN=admin
 PORTAINER_PASS=\$(python3 -c 'import random; print("".join(random.choices("abcdefghijklmnopqrstuvwxyz1234567890", k=16)));')
 PORTAINER_AUTH="{\"username\":\"\$PORTAINER_ADMIN\",\"password\":\"\$PORTAINER_PASS\"}"
@@ -94,14 +94,21 @@ echo Portainer auth: \$PORTAINER_ADMIN:\$PORTAINER_PASS@\$PORTAINER_IP
 echo
 echo
 
-echo # Setup Default Portainer Stacks
+echo # Setup local Docker connection for Portainer
 PORTAINER_JWT=\$(curl -X POST -H "Content-Type: application/json" \
                     -d "\$PORTAINER_AUTH" \
                     http://\$PORTAINER_IP:9000/api/auth \
                 | jq -r .jwt)
+curl -X POST -H "Authorization: Bearer \$PORTAINER_JWT" \
+    -F Name=local -F EndpointCreationType=1 \
+    http://\$PORTAINER_IP:9000/api/endpoints
+echo
+echo
+
+echo # Setup Default Portainer Stacks
 PORTAINER_ENDPOINTID=\$(curl -H "Authorization: Bearer \$PORTAINER_JWT" \
                             http://\$PORTAINER_IP:9000/api/endpoints \
-                            | jq '.[0].Id')
+                            | jq -r '.[0].Id')
 STACK_SETUP_PAYLOAD_COMMON=$(cat << EJSON
 {
     "method": "repository",
