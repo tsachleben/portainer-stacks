@@ -23,9 +23,9 @@ services:
       - NTFY_CACHE_FILE=/var/cache/ntfy/cache.db
       - NTFY_CACHE_DURATION=168h
       - NTFY_ATTACHMENT_CACHE_DIR=/var/cache/ntfy/attachments
-      - NTFY_ATTACHMENT_TOTAL_SIZE_LIMIT=1G
-      - NTFY_ATTACHMENT_FILE_SIZE_LIMIT=50M
-      - NTFY_ATTACHMENT_EXPIRY_DURATION=24H
+      - NTFY_ATTACHMENT_TOTAL_SIZE_LIMIT="1G"
+      - NTFY_ATTACHMENT_FILE_SIZE_LIMIT="50M"
+      - NTFY_ATTACHMENT_EXPIRY_DURATION="24h"
       - NTFY_AUTH_DEFAULT_ACCESS="deny-all"
     volumes:
       - ntfy-etc:/etc/ntfy
