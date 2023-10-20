@@ -97,30 +97,62 @@ echo
 echo # Setup Default Portainer Stacks
 PORTAINER_JWT=\$(curl -X POST -H "Content-Type: application/json" \
                     -d "\$PORTAINER_AUTH" \
-                    http://\$PORTAINER_IP:9000/api/auth
+                    http://\$PORTAINER_IP:9000/api/auth \
                 | jq -r .jwt)
-STACK_SETUP_PAYLOAD_COMMON="{
-        \"AdditionalFiles\": [],
-        \"AutoUpdate\": {
-            \"interval\": \"5m\"
-        }
-        \"ComposeFile\": \"common/docker-compose.yml\",
-        \"Env\": [],
-        \"Name\": \"common\",
-        \"RepositoryAuthentication\": true,
-        \"RepositoryURL\": \"https://github.com/tsachleben/portainer-stacks.git\",
-        \"RepositoryUsername\": \"$GITHUB_UNAME\",
-        \"RepositoryPassword\": \"$GITHUB_PAT\",
-    }"
-STACK_SETUP_PAYLOAD_HOST="{
-        \"name\": \"common\",
-        \"repositoryURL\": \"https://github.com/tsachleben/portainer-stacks.git\",
-        \"composeFile\": \"$TGT_HOST/docker-compose.yml\",
-        \"repositoryAuthentication\": true,
-        \"repositoryUsername\": \"$GITHUB_UNAME\",
-        \"repositoryPassword\": \"$GITHUB_PAT\",
-        \"AutoUpdate\": {
-            \"interval\": \"5m\"
-        }
-    }"
+PORTAINER_ENDPOINTID=\$(curl -H "Authorization: Bearer \$PORTAINER_JWT" \
+                            http://\$PORTAINER_IP:9000/api/endpoints \
+                            | jq '.[0].Id')
+STACK_SETUP_PAYLOAD_COMMON=$(cat << EJSON
+{
+    "method": "repository",
+    "type": "standalone",
+    "Name": "common",
+    "RepositoryURL": "https://github.com/tsachleben/portainer-stacks.git",
+    "RepositoryReferenceName": "refs/heads/main",
+    "RepositoryAuthentication": true,
+    "RepositoryUsername": "$GITHUB_UNAME",
+    "RepositoryPassword": "$GITHUB_PAT",
+    "TLSSkipVerify": false,
+    "ComposeFile": "common/docker-compose.yaml",
+    "AdditionalFiles": [],
+    "Env": [],
+    "AutoUpdate": {
+        "Interval": "5m",
+        "Webhook": "",
+        "ForceUpdate": false,
+        "ForcePullImage": false
+    }
+}
+EJSON
+)
+STACK_SETUP_PAYLOAD_HOST=$(cat << EJSON
+{
+    "method": "repository",
+    "type": "standalone",
+    "Name": "$TGT_HOST",
+    "RepositoryURL": "https://github.com/tsachleben/portainer-stacks.git",
+    "RepositoryReferenceName": "refs/heads/main",
+    "RepositoryAuthentication": true,
+    "RepositoryUsername": "$GITHUB_UNAME",
+    "RepositoryPassword": "$GITHUB_PAT",
+    "TLSSkipVerify": false,
+    "ComposeFile": "$TGT_HOST/docker-compose.yaml",
+    "AdditionalFiles": [],
+    "Env": [],
+    "AutoUpdate": {
+        "Interval": "5m",
+        "Webhook": "",
+        "ForceUpdate": false,
+        "ForcePullImage": false
+    }
+}
+EJSON
+)
+curl -X POST -H "Authorization: Bearer \$PORTAINER_JWT" \
+    -H "Content-Type: application/json" -d \$STACK_SETUP_PAYLOAD_COMMON \
+    https://\$PORTAINER_IP:9443/api/stacks/create/standalone/repository?endpointId=\$PORTAINER_ENDPOINTID
+curl -X POST -H "Authorization: Bearer \$PORTAINER_JWT" \
+    -H "Content-Type: application/json" -d \$STACK_SETUP_PAYLOAD_HOST \
+    http://\$PORTAINER_IP:9000/api/stacks/create/standalone/repository?endpointId=\$PORTAINER_ENDPOINTID
+
 EOF

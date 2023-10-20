@@ -14,6 +14,7 @@ OLD_OLD_PORTAINER=\$(sudo docker ps -aq -f name=portainer.bak)
 [[ -z "\$OLD_OLD_PORTAINER" ]] || docker rm \$OLD_OLD_PORTAINER
 sudo docker stop portainer
 sudo docker rename portainer portainer.bak
+sudo docker update --restart no portainer.bak
 sudo docker run -d \
     --name portainer \
     --restart=always \
