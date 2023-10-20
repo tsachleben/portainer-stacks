@@ -11,7 +11,9 @@ services:
       - wg_bridge
     restart: unless-stopped
   ntfy:
-    image: binwiederhier/ntfy
+    image: binwiederhier/ntfy:v2.7.0
+    command:
+      - serve
     container_name: ntfy
     environment:
       - TZ=Etc/UTC
