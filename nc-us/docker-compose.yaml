@@ -1,11 +1,24 @@
 ---
 services:
+  certbot:
+    image: certbot/dns-cloudflare:v2.7.2
+    container_name: certbot
+    environment:
+      - TZ=Etc/UTC
+    volumes:
+      - tls-certs:/etc/letsencrypt
+      - tls-cert-vaultwarden:/etc/letsencrypt/live/vaultwarden.sachlben.me
+    networks:
+      - mgmt
+    restart: unless-stopped
   vaultwarden:
     image: vaultwarden/server:1.29.2-alpine
     container_name: vaultwarden
     environment:
       - TZ=Etc/UTC
+      - ROCKET_TLS={certs="/etc/letsencrypt/live/vaultwarden.sachlben.me/fullchain.pem",key="/etc/letsencrypt/live/vaultwarden.sachlben.me/privkey.pem"}
     volumes:
+      - tls-cert-vaultwarden:/etc/letsencrypt/live/vaultwarden.sachlben.me
       - vaultwarden-data:/data
     networks:
       - wg_bridge
@@ -35,6 +48,8 @@ services:
       - wg_bridge
     restart: unless-stopped
 volumes:
+  tls-certs: {}
+  tls-cert-vaultwarden: {}
   vaultwarden-data: {}
   ntfy-etc: {}
   ntfy-lib: {}
@@ -42,3 +57,4 @@ volumes:
 networks:
   wg_bridge:
     external: true
+  mgmt: {}
