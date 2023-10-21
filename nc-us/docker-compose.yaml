@@ -2,6 +2,9 @@
 services:
   certbot:
     image: certbot/dns-cloudflare:v2.7.2
+    command:
+      - certonly
+      - --standalone
     container_name: certbot
     environment:
       - TZ=Etc/UTC
