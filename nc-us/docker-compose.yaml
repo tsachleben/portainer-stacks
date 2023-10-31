@@ -1,16 +1,13 @@
 ---
 services:
   certbot:
-    image: certbot/dns-cloudflare:v2.7.2
-    command:
-      - certonly
-      - --standalone
+    image: tsachleben/crond-certbot:latest
     container_name: certbot
     environment:
       - TZ=Etc/UTC
     volumes:
       - tls-certs:/etc/letsencrypt
-      - tls-cert-vaultwarden:/etc/letsencrypt/live/vaultwarden.sachlben.me
+      - tls-cert-vaultwarden:/etc/letsencrypt/live/vaultwarden.sachleben.me
     networks:
       - mgmt
     restart: unless-stopped
@@ -19,9 +16,10 @@ services:
     container_name: vaultwarden
     environment:
       - TZ=Etc/UTC
-      - ROCKET_TLS={certs="/etc/letsencrypt/live/vaultwarden.sachlben.me/fullchain.pem",key="/etc/letsencrypt/live/vaultwarden.sachlben.me/privkey.pem"}
+      - ROCKET_TLS={certs="/etc/letsencrypt/live/vaultwarden.sachleben.me/fullchain.pem",key="/etc/letsencrypt/live/vaultwarden.sachleben.me/privkey.pem"}
     volumes:
-      - tls-cert-vaultwarden:/etc/letsencrypt/live/vaultwarden.sachlben.me
+      - tls-cert-ntfy:/etc/letsencrypt/live/ntfy.sachleben.me
+      - tls-cert-vaultwarden:/etc/letsencrypt/live/vaultwarden.sachleben.me
       - vaultwarden-data:/data
     networks:
       - wg_bridge
@@ -47,11 +45,13 @@ services:
       - ntfy-etc:/etc/ntfy
       - ntfy-lib:/var/lib/ntfy
       - ntfy-cache:/var/cache/ntfy
+      - tls-cert-ntfy:/etc/letsencrypt/live/ntfy.sachleben.me
     networks:
       - wg_bridge
     restart: unless-stopped
 volumes:
   tls-certs: {}
+  tls-cert-ntfy: {}
   tls-cert-vaultwarden: {}
   vaultwarden-data: {}
   ntfy-etc: {}
