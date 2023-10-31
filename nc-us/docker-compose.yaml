@@ -7,7 +7,10 @@ services:
       - TZ=Etc/UTC
     volumes:
       - tls-certs:/etc/letsencrypt
-      - tls-cert-vaultwarden:/etc/letsencrypt/live/vaultwarden.sachleben.me
+      - tls-archive-ntfy:/etc/letsencrypt/archive/ntfy.sachleben.me
+      - tls-cert-ntfy:/etc/letsencrypt/live/ntfy.sachleben.me
+      - tls-archive-vaultwarden:/etc/letsencrypt/archive/vaultwarden.sachleben.me
+      - tls-live-vaultwarden:/etc/letsencrypt/live/vaultwarden.sachleben.me
     networks:
       - mgmt
     restart: unless-stopped
@@ -19,8 +22,8 @@ services:
       - ROCKET_TLS={certs="/etc/letsencrypt/live/vaultwarden.sachleben.me/fullchain.pem",key="/etc/letsencrypt/live/vaultwarden.sachleben.me/privkey.pem"}
     volumes:
       - tls-certs:/etc/letsencrypt
-      - tls-cert-ntfy:/etc/letsencrypt/live/ntfy.sachleben.me
-      - tls-cert-vaultwarden:/etc/letsencrypt/live/vaultwarden.sachleben.me
+      - tls-archive-vaultwarden:/etc/letsencrypt/archive/vaultwarden.sachleben.me
+      - tls-live-vaultwarden:/etc/letsencrypt/live/vaultwarden.sachleben.me
       - vaultwarden-data:/data
     networks:
       wg_bridge:
@@ -54,8 +57,10 @@ services:
     restart: unless-stopped
 volumes:
   tls-certs: {}
-  tls-cert-ntfy: {}
-  tls-cert-vaultwarden: {}
+  tls-archive-ntfy: {}
+  tls-live-ntfy: {}
+  tls-archive-vaultwarden: {}
+  tls-live-vaultwarden: {}
   vaultwarden-data: {}
   ntfy-etc: {}
   ntfy-lib: {}
