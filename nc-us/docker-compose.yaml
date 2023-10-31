@@ -18,6 +18,7 @@ services:
       - TZ=Etc/UTC
       - ROCKET_TLS={certs="/etc/letsencrypt/live/vaultwarden.sachleben.me/fullchain.pem",key="/etc/letsencrypt/live/vaultwarden.sachleben.me/privkey.pem"}
     volumes:
+      - tls-certs:/etc/letsencrypt
       - tls-cert-ntfy:/etc/letsencrypt/live/ntfy.sachleben.me
       - tls-cert-vaultwarden:/etc/letsencrypt/live/vaultwarden.sachleben.me
       - vaultwarden-data:/data
