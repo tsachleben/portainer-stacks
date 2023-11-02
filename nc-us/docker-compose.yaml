@@ -36,8 +36,9 @@ services:
     environment:
       - TZ=Etc/UTC
       - NTFY_BASE_URL=http://ntfy.sachleben.me
-      # - NTFY_LISTEN_HTTPS=:443
-      - NTFY_BEHIND_PROXY=true
+      - NTFY_LISTEN_HTTPS=:443
+      - NTFY_KEY_FILE=/etc/letsencrypt/live/ntfy.sachleben.me/privkey.pem
+      - NTFY_CERT_FILE=/etc/letsencrypt/live/ntfy.sachleben.me/fullchain.pem
       - NTFY_CACHE_FILE=/var/cache/ntfy/cache.db
       - NTFY_CACHE_DURATION=168h
       - NTFY_ATTACHMENT_CACHE_DIR=/var/cache/ntfy/attachments
