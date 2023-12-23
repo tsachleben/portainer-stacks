@@ -1,0 +1,76 @@
+version: "3"
+
+networks:
+  house_public:
+    external: true
+  backend_net:
+    driver: bridge
+
+volumes:
+  tandoor-config:
+  tandoor-media:
+  tandoor-static:
+  tandoor-db:
+
+services:
+  postgres:
+    restart: always
+    image: "postgres:11-alpine"
+    environment:
+      POSTGRES_DB: $POSTGRES_DB
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      TIMEZONE: $TIMEZONE
+    networks:
+      backend_net: {}
+    volumes:
+      - tandoor-db:/var/lib/postgresql/data
+  web_recipes:
+    restart: always
+    image: "vabene1111/recipes:1.4.5"
+    environment:
+      DB_ENGINE: "django.db.backends.postgresql"
+      DEBUG: 0
+      GUNICORN_MEDIA: 0
+      POSTGRES_HOST: "postgres"
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      POSTGRES_DB: $POSTGRES_DB
+      SECRET_KEY: $DJANGO_SECRET_KEY
+      TIMEZONE: $TIMEZONE
+    networks:
+      backend_net: {}
+    volumes:
+      - tandoor-config:/opt/recipes/nginx/conf.d
+      - tandoor-media:/opt/recipes/mediafiles
+      - tandoor-static:/opt/recipes/staticfiles
+    depends_on:
+      - postgres
+  house_proxy:
+    restart: always
+    image: "nginx:mainline-alpine"
+    environment:
+      TIMEZONE: "Etc/GMT"
+    networks:
+      backend_net: {}
+      house_public:
+        ipv4_address: 192.168.1.80
+    volumes:
+      - tandoor-config:/etc/nginx/conf.d:ro
+      - tandoor-media:/media:ro
+      - tandoor-static:/static:ro
+    depends_on:
+      - web_recipes
+  public_proxy:
+    restart: always
+    image: "cloudflare/cloudflared:2022.12.1"
+    command: tunnel run --token $CLOUDFLARE_TUNNEL_TOKEN
+    environment:
+      TIMEZONE: $TIMEZONE
+      TUNNEL_LOGLEVEL: "info"
+      TUNNEL_TRANSPORT_PROTOCOL: "auto"
+    networks:
+      backend_net: {}
+    depends_on:
+      - web_recipes
+    
