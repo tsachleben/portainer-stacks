@@ -11,7 +11,10 @@ services:
       timeout: 5s
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    networks:
+      authentik_backend: {}
     environment:
+      TZ: ${TZ}
       POSTGRES_DB: ${PG_DB}
       POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD: ${PG_PASS:?database password required}
@@ -27,22 +30,29 @@ services:
       timeout: 3s
     volumes:
       - redis-data:/data
+    networks:
+      authentik_backend: {}
+    environment:
+      TZ: ${TZ}
   server:
     image: ghcr.io/goauthentik/server:2023.10.5
     restart: unless-stopped
     command: server
+    volumes:
+      - authentik-media:/media
+      - authentik-templates:/templates
+    networks:
+      authentik_backend: {}
+      wg_bridge:
+        ipv4_address: 172.16.1.5
     environment:
       AUTHENTIK_REDIS__HOST: redis
       AUTHENTIK_POSTGRESQL__HOST: postgresql
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB}
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
-    volumes:
-      - authentik-media:/media
-      - authentik-templates:/templates
-    networks:
-        wg_bridge:
-          ipv4_address: 172.16.1.5
+    env_file:
+      - stack.env
     depends_on:
       - postgresql
       - redis
@@ -50,16 +60,20 @@ services:
     image: ghcr.io/goauthentik/server:2023.10.5
     restart: unless-stopped
     command: worker
+    volumes:
+      - authentik-media:/media
+      - authentik-certs:/certs
+      - authentik-templates:/templates
+    networks:
+      authentik_backend: {}
     environment:
       AUTHENTIK_REDIS__HOST: redis
       AUTHENTIK_POSTGRESQL__HOST: postgresql
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
-    volumes:
-      - authentik-media:/media
-      - authentik-certs:/certs
-      - authentik-templates:/templates
+    env_file:
+      - stack.env
     depends_on:
       - postgresql
       - redis
@@ -74,3 +88,4 @@ volumes:
 networks:
   wg_bridge:
     external: true
+  authentik_backend: {}
