@@ -14,6 +14,15 @@ services:
     networks:
       - mgmt
     restart: unless-stopped
+  dex:
+    image: dexidp/dex:v2.37.0
+    container_name: dex
+    environment:
+      - TZ=Etc/UTC
+    networks:
+      wg_bridge:
+        ipv4_address: 172.16.1.5
+    restart: unless-stopped
   vaultwarden:
     image: vaultwarden/server:1.29.2-alpine
     container_name: vaultwarden
