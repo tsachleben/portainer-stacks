@@ -51,8 +51,10 @@ services:
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB}
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
-    env_file:
-      - stack.env
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+      AUTHENTIK_ERROR_REPORTING__ENABLED: ${AUTHENTIK_ERROR_REPORTING__ENABLED}
+      COMPOSE_PORT_HTTPS: ${COMPOSE_PORT_HTTPS}
+      TZ: ${TZ}
     depends_on:
       - postgresql
       - redis
@@ -69,11 +71,12 @@ services:
     environment:
       AUTHENTIK_REDIS__HOST: redis
       AUTHENTIK_POSTGRESQL__HOST: postgresql
-      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
-      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB}
+      AUTHENTIK_POSTGRESQL__USER: ${PG_USER}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
-    env_file:
-      - stack.env
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+      AUTHENTIK_ERROR_REPORTING__ENABLED: ${AUTHENTIK_ERROR_REPORTING__ENABLED}
+      TZ: ${TZ}
     depends_on:
       - postgresql
       - redis
