@@ -8,8 +8,18 @@ services:
     networks:
       - wg_bridge
     restart: unless-stopped
+    version: "3.3"
+  homepage:
+    image: ghcr.io/gethomepage/homepage:v0.8.8
+    container_name: homepage
+    networks:
+      - wg_bridge
+    volumes:
+      - homepage-config:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock # (optional) For docker integrations
 volumes:
   mongodb: {}
+  homepage-config: {}
 networks:
   wg_bridge:
     external: true
