@@ -1,6 +1,6 @@
 ---
+version: "3.8"
 services:
-  version: "3.3"
   mongo:
     image: mongo:5.0.25
     container_name: mongo
