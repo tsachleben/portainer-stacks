@@ -1,14 +1,14 @@
 ---
 services:
+  version: "3.3"
   mongo:
-    image: mongo:5.0
+    image: mongo:5.0.25
     container_name: mongo
     volumes:
       - mongodb:/data/db
     networks:
       - wg_bridge
     restart: unless-stopped
-    version: "3.3"
   homepage:
     image: ghcr.io/gethomepage/homepage:v0.8.8
     container_name: homepage
