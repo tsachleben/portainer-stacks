@@ -18,7 +18,7 @@ services:
       - homepage-config:/app/config
       - /var/run/docker.sock:/var/run/docker.sock # (optional) For docker integrations
   freshrss:
-    image: freshrss/freshrss:
+    image: freshrss/freshrss
     container_name: freshrss
     environment:
       - TZ=Europe/Paris
