@@ -17,9 +17,21 @@ services:
     volumes:
       - homepage-config:/app/config
       - /var/run/docker.sock:/var/run/docker.sock # (optional) For docker integrations
+  freshrss:
+    image: freshrss/freshrss:
+    container_name: freshrss
+    environment:
+      - TZ=Europe/Paris
+      - CRON_MIN=1,31
+    volumes:
+      - freshrss:/var/www/FreshRSS
+    networks:
+      - wg_bridge
+    restart: unless-stopped
 volumes:
   mongodb: {}
   homepage-config: {}
+  freshrss: {}
 networks:
   wg_bridge:
     external: true
