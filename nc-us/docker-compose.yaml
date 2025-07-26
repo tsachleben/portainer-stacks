@@ -74,7 +74,7 @@ services:
     restart: unless-stopped
     networks:
       wg_bridge:
-        ipv4_address: 172.16.1.5
+        ipv4_address: 172.16.1.6
 volumes:
   # dex-etc: {}
   tls-certs: {}
