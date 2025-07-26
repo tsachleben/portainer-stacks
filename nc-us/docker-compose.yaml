@@ -1,4 +1,4 @@
-d---
+---
 services:
   certbot:
     image: tsachleben/crond-certbot:latest
