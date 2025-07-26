@@ -69,6 +69,10 @@ services:
       wg_bridge:
         ipv4_address: 172.16.1.4
     restart: unless-stopped
+  cloudflared:
+    image: wisdomsky/cloudflared-web:latest
+    restart: unless-stopped
+    network_mode: host
 volumes:
   # dex-etc: {}
   tls-certs: {}
