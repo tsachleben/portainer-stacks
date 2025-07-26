@@ -60,6 +60,7 @@ services:
       - NTFY_ATTACHMENT_FILE_SIZE_LIMIT=50M
       - NTFY_ATTACHMENT_EXPIRY_DURATION=24h
       - NTFY_AUTH_DEFAULT_ACCESS=deny-all
+      - NTFY_WEB_PUSH_FILE=/var/cache/ntfy/webpush.db
     volumes:
       - ntfy-etc:/etc/ntfy
       - ntfy-lib:/var/lib/ntfy
