@@ -47,12 +47,13 @@ services:
       - serve
     container_name: ntfy
     environment:
-      - TZ=Etc/UTC
+      - TZ=America/New_York
       - NTFY_BASE_URL=http://ntfy.sachleben.me
-      - NTFY_LISTEN_HTTPS=:443
-      - NTFY_KEY_FILE=/etc/letsencrypt/live/ntfy.sachleben.me/privkey.pem
-      - NTFY_CERT_FILE=/etc/letsencrypt/live/ntfy.sachleben.me/fullchain.pem
+      - NTFY_AUTH_FILE=/var/lib/ntfy/auth.db
       - NTFY_CACHE_FILE=/var/cache/ntfy/cache.db
+      - NTFY_BEHIND_PROXY=true
+      - NTFY_ENABLE_LOGIN=true
+      - NTFY_ENABLE_SIGNUP=false
       - NTFY_CACHE_DURATION=168h
       - NTFY_ATTACHMENT_CACHE_DIR=/var/cache/ntfy/attachments
       - NTFY_ATTACHMENT_TOTAL_SIZE_LIMIT=1G
